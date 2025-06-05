@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+    textarea:focus {
+      border-color: #1f4037;
+      outline: none;
+    }
+
+    select, button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+
+    select:hover, button:hover {
+      background-color: #1f4037;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Texto para Voz</h1>
+    <textarea id="texto" placeholder="Digite seu texto aqui..."></textarea>
+    <select id="vozes"></select>
+    <button onclick="falarTexto()">🔊 Ouvir Texto</button>
+  </div>
+
+  <script>
+    const texto = document.getElementById('texto');
+    const vozesSelect = document.getElementById('vozes');
+    let vozes = [];
+
+    function carregarVozes() {
+      vozes = speechSynthesis.getVoices();
+      vozesSelect.innerHTML = '';
+      vozes.forEach((voz, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${voz.name} (${voz.lang})`;
+        vozesSelect.appendChild(option);
+      });
+    }
+
+    speechSynthesis.onvoiceschanged = carregarVozes;
+
+    function falarTexto() {
+      const utterance = new SpeechSynthesisUtterance(texto.value);
+      const vozSelecionada = vozes[vozesSelect.value];
+      if (vozSelecionada) utterance.voice = vozSelecionada;
+      speechSynthesis.speak(utterance);
+    }
+  </script>
+</body>
+</html>
